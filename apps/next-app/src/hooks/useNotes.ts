@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Note, YouTubeNote, ImageNote, DocumentNote } from '../components/Types/types'
+import { Note, YouTubeNote, ImageNote, DocumentNote } from '@/Types/types'
 
 export function useNotes() {
   const [notes, setNotes] = useState<Note[]>([]);

@@ -11,8 +11,10 @@ export async function GET(req: NextRequest){
             },
             select:{
                 title: true,
-                url: true,
                 type: true,
+                url: true,
+                content: true,
+                createdAt: true
             }
         })
         return NextResponse.json({

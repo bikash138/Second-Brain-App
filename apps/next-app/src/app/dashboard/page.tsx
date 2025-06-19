@@ -1,14 +1,18 @@
 'use client'
-import React, { useState, useRef } from 'react'; 
+import React, { useState, useRef, useEffect } from 'react'; 
 import { Plus } from 'lucide-react';
 import Sidebar from "@/components/Dashboard/Sidebar"
 import SearchBar from "@/components/Dashboard/SearchBar"
 import NoteCard from "@/components/Dashboard/NoteCard"
 import AddNoteModal from "@/components/Dashboard/AddNoteModal"
 import { useNotes } from '@/hooks/useNotes'
+import { Typewriter } from 'react-simple-typewriter';
+import FadeIn from '@/components/FadeIn';
+import axios from 'axios';
 
 function App() {
   const { notes, addNote, searchNotes, filterNotesByType } = useNotes();
+  const[allThoughts, setAllThoughts] = useState([])
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -17,6 +21,8 @@ function App() {
 
   // Apply both search and filter
   const getFilteredNotes = () => {
+
+
     let filteredNotes = filterNotesByType(selectedFilter);
     if (searchQuery.trim()) {
       filteredNotes = filteredNotes.filter(note =>
@@ -27,6 +33,19 @@ function App() {
     }
     return filteredNotes;
   };
+
+  useEffect(()=>{
+    const getAllThought = async() => {
+    try{
+      const allThoughts = await axios.get("/api/getAllThought")
+      setAllThoughts(allThoughts.data?.thought)
+      console.log(allThoughts.data?.thought)
+    }catch(error){
+      console.log(error)
+    }
+  }
+  getAllThought()
+  },[])
 
   const filteredNotes = getFilteredNotes();
 
@@ -60,11 +79,20 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gray-950 flex flex-col">
       {/* Header Section (Full Screen Overlay) */}
-      <div className="h-screen flex flex-col items-center justify-center bg-gray-900 z-20">
-        <h1 className="text-4xl font-bold text-white mb-2 text-center">
-          Hi there! What’s on your mind today?
+      <div className="h-screen flex flex-col items-center justify-center bg-gray-950 z-20 ">
+        <h1 className="text-4xl font-bold text-purple-400 mb-2 text-center">
+          <Typewriter
+            words={['Hi there! What’s on your mind today?']}
+            loop={1}
+            cursor
+            cursorStyle="_"
+            cursorColor='#DDA0DD'
+            typeSpeed={100}
+            deleteSpeed={50}
+            delaySpeed={1000}
+          />
         </h1>
         <p className="text-gray-400 text-lg mb-8 text-center">
           Capture your ideas in any format. Search and organize your digital brain instantly
@@ -75,6 +103,7 @@ function App() {
       {/* Main Content (hidden behind header, scrolls into view) */}
       <div className="flex-1 lg:ml-0">
         {/* Main Content */}
+        <FadeIn>
         <div className="flex-1 lg:ml-0 my-20">
           {/* Main Content Area */}
           <div className="px-4 sm:px-6 lg:px-8 py-8 min-w-full">
@@ -97,21 +126,20 @@ function App() {
                 )}
               </div>
             </div>
-
-            {/* Notes Grid */}
-            {filteredNotes.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredNotes.map((note) => (
-                  <NoteCard
-                    key={note.id}
-                    note={note}
-                    onClick={() => handleNoteClick(note.id)}
-                    onEdit={() => handleNoteEdit(note.id)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16">
+            {
+              allThoughts.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+                  {
+                    allThoughts.map((thought, index)=>(
+                      <NoteCard
+                          key={index}
+                          note={thought}
+                        />
+                    ))
+                  }
+                </div>
+              ) : (
+                <div className="text-center py-16">
                 <div className="max-w-md mx-auto">
                   <div className="bg-gray-800 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                     <Plus className="w-8 h-8 text-gray-400" />
@@ -132,14 +160,16 @@ function App() {
                   </button>
                 </div>
               </div>
-            )}
+              )
+            }
           </div>
         </div>
+        </FadeIn>
 
         {/* Floating Action Button */}
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 z-50"
+          className="cursor-pointer fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 z-50"
           aria-label="Add new note"
         >
           <Plus className="w-6 h-6" />

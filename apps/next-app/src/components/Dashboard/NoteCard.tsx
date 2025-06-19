@@ -4,15 +4,17 @@ import { Note, YouTubeNote, ImageNote, DocumentNote } from '../Types/types'
 
 interface NoteCardProps {
   note: Note;
-  onClick: () => void;
-  onEdit: () => void;
+  onClick?: () => void;
+  onEdit?: () => void;
 }
 
 export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
-  const formatDate = (date: Date) => {
+  const formatDate = (dateString: string | Date) => {
+    const date = typeof dateString === "string" ? new Date(dateString) : dateString;
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
+      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     }).format(date);
@@ -88,7 +90,7 @@ export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
   return (
     <div
       onClick={onClick}
-      className={`group relative bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border-l-4 hover:bg-gray-750`}
+      className={`group relative bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border-l-4 hover:bg-slate-950`}
       style={{ borderLeftColor: note.color }}
     >
       <div className="p-4">
@@ -109,9 +111,13 @@ export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
           </button>
         </div>
         
-        {note.content && (
+        {note.content ? (
           <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 mb-3">
             {note.content}
+          </p>
+        ) : (
+          <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 mb-3">
+            {note.url}
           </p>
         )}
         
@@ -122,7 +128,7 @@ export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
           </div>
           <div className="flex items-center space-x-1">
             <Calendar className="w-3 h-3" />
-            <span>{formatDate(note.updatedAt)}</span>
+            <span>{formatDate(note.createdAt)}</span>
           </div>
         </div>
       </div>

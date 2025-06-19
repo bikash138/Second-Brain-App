@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
-import { X, FileText, Play, Image as ImageIcon, Upload, Plus } from 'lucide-react';
-import { Note } from '../Types/types'
+import React, { useEffect, useState } from 'react';
+import { X, FileText, Play, Image as ImageIcon, Upload, Plus, Twitter, Link  } from 'lucide-react';
+import { Note } from '@/Types/types'
+import {useForm} from 'react-hook-form'
+import LinkArea from './LinkArea';
+import axios from 'axios'
 
 interface AddNoteModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddNote: (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => void;
 }
+
+const TypeButton = [
+  { type: 'TEXT' as const, icon: FileText, label: 'Text', color: 'bg-green-600 text-white' },
+  { type: 'VIDEO' as const, icon: Play, label: 'YouTube', color: 'bg-red-600 text-white' },
+  { type: 'TWEET' as const, icon: Twitter, label: 'Tweet', color: 'bg-blue-600 text-white' },
+  { type: 'LINK' as const, icon: Link, label: 'Link', color: 'bg-purple-600 text-white' },
+]
 
 const noteColors = [
   '#FFD700', // Yellow
@@ -20,32 +30,67 @@ const noteColors = [
 ];
 
 export default function AddNoteModal({ isOpen, onClose, onAddNote }: AddNoteModalProps) {
-  const [noteType, setNoteType] = useState<'text' | 'youtube' | 'image' | 'document'>('text');
+
+  interface NoteForm {
+    type: 'TEXT' | 'VIDEO' | 'TWEET' | 'LINK';
+    title: string;
+    content?: string;
+    url?: string
+  }
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors }
+  } = useForm<NoteForm>({defaultValues: {
+    type: 'TEXT',
+    title: '',
+    content: '',
+    url: ''
+  }})
+
+  const [noteType, setNoteType] = useState<'TEXT' | 'VIDEO' | 'TWEET' | 'LINK'>('TEXT');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedColor, setSelectedColor] = useState(noteColors[0]);
 
+  useEffect(()=>{
+    setValue('type', noteType)
+  }, [noteType, setValue])
+
   const resetForm = () => {
-    setNoteType('text');
+    setNoteType('TEXT');
     setTitle('');
     setContent('');
     setSelectedColor(noteColors[0]);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
+  const onSubmit = async (data: NoteForm) => {
+    const payload =
+      noteType === 'TEXT'
+        ? { type: data.type, title: data.title, content: data.content }
+        : { type: data.type, title: data.title, url: data.url };
+      
+    console.log(payload)
+    await axios.post("/api/addThought", payload)
 
-    const newNote: Omit<Note, 'id' | 'createdAt' | 'updatedAt'> = {
-      type: noteType,
-      title: title.trim(),
-      content: content.trim(),
-      color: selectedColor,
-    };
+    reset()
+    resetForm()
+    onClose()
+    
 
-    onAddNote(newNote);
-    resetForm();
-    onClose();
+    // const newNote: Omit<Note, 'id' | 'createdAt' | 'updatedAt'> = {
+    //   type: noteType,
+    //   title: title.trim(),
+    //   content: content.trim(),
+    //   color: selectedColor,
+    // };
+    
+    // onAddNote(newNote);
+    // resetForm();
+    // onClose();
   };
 
   if (!isOpen) return null;
@@ -57,41 +102,40 @@ export default function AddNoteModal({ isOpen, onClose, onAddNote }: AddNoteModa
           <h2 className="text-xl font-semibold text-white">Add New Note</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-700 rounded-full transition-colors duration-200"
+            className="p-2 cursor-pointer  hover:bg-gray-700 rounded-full transition-colors duration-200"
           >
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
           {/* Note Type Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-3">
               Note Type
             </label>
+            <input type="hidden" {...register('type')} value={noteType}/>
+
             <div className="grid grid-cols-4 gap-3">
-              {[
-                { type: 'text' as const, icon: FileText, label: 'Text', color: 'bg-blue-600 text-white' },
-                { type: 'youtube' as const, icon: Play, label: 'YouTube', color: 'bg-red-600 text-white' },
-                { type: 'image' as const, icon: ImageIcon, label: 'Image', color: 'bg-green-600 text-white' },
-                { type: 'document' as const, icon: Upload, label: 'Document', color: 'bg-purple-600 text-white' },
-              ].map(({ type, icon: Icon, label, color }) => (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() => setNoteType(type)}
-                  className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all duration-200 ${
-                    noteType === type
-                      ? 'border-blue-500 bg-blue-600/20 scale-105'
-                      : 'border-gray-600 hover:border-gray-500 hover:bg-gray-700'
-                  }`}
-                >
-                  <div className={`p-2 rounded-lg ${color} mb-2`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-300">{label}</span>
-                </button>
-              ))}
+              {
+                TypeButton.map(({ type, icon: Icon, label, color }) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setNoteType(type)}
+                    className={`cursor-pointer flex flex-col items-center p-3 rounded-xl border-2 transition-all duration-200 ${
+                      noteType === type
+                        ? 'border-blue-500 bg-blue-600/20 scale-105'
+                        : 'border-gray-600 hover:border-gray-500 hover:bg-gray-700'
+                    }`}
+                  >
+                    <div className={`p-2 rounded-lg ${color} mb-2`}>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-300">{label}</span>
+                  </button>
+                ))
+              }
             </div>
           </div>
 
@@ -103,6 +147,7 @@ export default function AddNoteModal({ isOpen, onClose, onAddNote }: AddNoteModa
             <input
               type="text"
               id="title"
+              {...register('title')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter note title..."
@@ -114,22 +159,29 @@ export default function AddNoteModal({ isOpen, onClose, onAddNote }: AddNoteModa
           {/* Content Input */}
           <div>
             <label htmlFor="content" className="block text-sm font-medium text-gray-300 mb-2">
-              {noteType === 'youtube' ? 'YouTube URL' : noteType === 'image' ? 'Image URL' : 'Content'}
+              {noteType === 'VIDEO' ? 'YouTube URL' : noteType === 'TWEET' ? 'Tweet URL' : noteType === 'LINK' ? 'URL' : 'Content'}
             </label>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder={
-                noteType === 'youtube'
-                  ? 'Paste YouTube URL here...'
-                  : noteType === 'image'
-                  ? 'Paste image URL here...'
-                  : 'Enter your note content...'
-              }
-              rows={4}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 resize-none text-white placeholder-gray-400"
-            />
+            {noteType === 'TEXT' ? (
+              <textarea
+                id="content"
+                value={content}
+                {...register('content')}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Enter your note content..."
+                rows={4}
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 resize-none text-white placeholder-gray-400"
+              />
+            ) : (
+              <textarea
+                id="content"
+                value={content}
+                {...register('url')}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Paste your link here..."
+                rows={2}
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 resize-none text-white placeholder-gray-400"
+              />
+            )}
           </div>
 
           {/* Color Selection */}

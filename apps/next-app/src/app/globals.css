@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+@keyframes marquee {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  animation: marquee 10s linear infinite;
+}
+
+
+/* For WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a; /* track color */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #4f46e5; /* thumb color (purple-600) */
+  border-radius: 6px;
+  border: 3px solid #000000; /* space around thumb */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #232238 #000000;
+}
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
