@@ -2,7 +2,7 @@ import { Worker } from "bullmq";
 import { Document } from "langchain/document";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { QdrantVectorStore } from "@langchain/qdrant";
-import {prisma} from "@repo/database/prisma"
+import { prisma } from "@repo/database/prisma"
 
 const worker = new Worker("second-brain", async (job) => {
     try {
@@ -33,20 +33,15 @@ const worker = new Worker("second-brain", async (job) => {
             model: "text-embedding-3-small",
             openAIApiKey: ""
         });
-        const vectorStore = await QdrantVectorStore.fromExistingCollection(
+        await QdrantVectorStore.fromDocuments(
+            [document],
             embeddings,
             {
-            url: "http://localhost:6333",
-            collectionName: "second-brain-testing",
+              url: "http://localhost:6333",
+              collectionName: "second-brain-testing",
             }
         );
-        console.log("Ingestion Done");
-
-        const userQuery = "?";
-        const topK = 3;
-        const results = await vectorStore.similaritySearch(userQuery, topK);
-
-        console.log(results)
+        console.log("Ingestion Done for job id: ", job.data?.noteId);
       }
     } catch (error) {
       console.error("Worker error:", error);

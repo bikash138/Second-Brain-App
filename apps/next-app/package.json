@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@langchain/openai": "^0.5.14",
+    "@langchain/qdrant": "^0.1.2",
     "@repo/database": "workspace:*",
     "@repo/queue": "workspace:*",
     "axios": "^1.10.0",

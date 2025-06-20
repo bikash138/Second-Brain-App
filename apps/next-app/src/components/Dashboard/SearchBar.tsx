@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Sparkles } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -7,6 +9,18 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onSearch, searchQuery }: SearchBarProps) {
+
+  const {
+    handleSubmit,
+    register
+  } = useForm()
+
+  //@ts-ignore
+  const onsubmit = async(data) => {
+    const result = await axios.post('/api/search', data)
+    console.log(result.data?.results)
+  }
+
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -29,18 +43,22 @@ export default function SearchBar({ onSearch, searchQuery }: SearchBarProps) {
             </div>
           </div>
           
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => onSearch(e.target.value)}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            placeholder="Ask anything or search your notes..."
+          <form onSubmit={handleSubmit(onsubmit)}>
+            <input
+              type="text"
+              {...register('search')}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder="Ask anything or search your notes..."
             className="flex-1 ml-4 text-lg bg-transparent border-none outline-none placeholder-gray-500 text-white"
-          />
+            />
+            <button className='cursor-pointer pointer ml-6'>
+              Search
+            </button>
+          </form>
         </div>
         
-        {isFocused && (
+        {/* {isFocused && (
           <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800 rounded-2xl shadow-xl border border-gray-700 p-4 z-10">
             <div className="text-sm text-gray-400">
               <p className="mb-2 font-medium text-gray-300">Search suggestions:</p>
@@ -57,7 +75,7 @@ export default function SearchBar({ onSearch, searchQuery }: SearchBarProps) {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
