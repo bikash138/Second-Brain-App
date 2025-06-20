@@ -1,5 +1,6 @@
 import { prisma } from "@repo/database/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import {enqueueNote} from "@repo/queue/enqueueNote"
 
 export async function POST(req: NextRequest) {
     try {
@@ -19,6 +20,13 @@ export async function POST(req: NextRequest) {
         const thought = await prisma.thought.create({
             data
         });
+        
+        const thoughtId = String(thought.id)
+            if (thoughtId){
+                await enqueueNote(thoughtId)
+            }else{
+                throw new Error("Error while enqueueing")
+        }
 
         return NextResponse.json({
             message: "Content Added Successfully",

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@repo/database": "workspace:*",
+    "@repo/queue": "workspace:*",
     "axios": "^1.10.0",
     "lucide-react": "^0.517.0",
     "next": "15.3.3",

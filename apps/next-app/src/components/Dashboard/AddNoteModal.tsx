@@ -4,6 +4,7 @@ import { Note } from '@/Types/types'
 import {useForm} from 'react-hook-form'
 import LinkArea from './LinkArea';
 import axios from 'axios'
+import { enqueueNote } from '@repo/queue/enqueueNote'
 
 interface AddNoteModalProps {
   isOpen: boolean;
@@ -68,17 +69,20 @@ export default function AddNoteModal({ isOpen, onClose, onAddNote }: AddNoteModa
   };
 
   const onSubmit = async (data: NoteForm) => {
-    const payload =
-      noteType === 'TEXT'
-        ? { type: data.type, title: data.title, content: data.content }
-        : { type: data.type, title: data.title, url: data.url };
-      
-    console.log(payload)
-    await axios.post("/api/addThought", payload)
-
-    reset()
-    resetForm()
-    onClose()
+    try{
+      const payload =
+        noteType === 'TEXT'
+          ? { type: data.type, title: data.title, content: data.content }
+          : { type: data.type, title: data.title, url: data.url };
+        
+      const response = await axios.post("/api/addThought", payload)
+      reset()
+      resetForm()
+      onClose()
+    }catch(error){
+      console.log(error)
+      console.log("Something went wrong while adding the thought")
+    }
     
 
     // const newNote: Omit<Note, 'id' | 'createdAt' | 'updatedAt'> = {
