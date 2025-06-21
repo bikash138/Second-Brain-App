@@ -1,6 +1,6 @@
 import React from 'react';
 import { FileText, Play, Image as ImageIcon, FileX, Calendar, Edit3 } from 'lucide-react';
-import { Note, YouTubeNote, ImageNote, DocumentNote } from '../Types/types'
+import { Note, YouTubeNote, ImageNote, DocumentNote } from '@/Types/types'
 
 interface NoteCardProps {
   note: Note;

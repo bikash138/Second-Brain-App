@@ -23,3 +23,14 @@ export interface LinkNote extends Note {
   type: 'LINK';
   url: string;
 }
+
+export interface DocumentNote extends Note {
+  type: 'LINK';
+  fileName: string;
+  fileType: string
+}
+
+export interface ImageNote extends Note {
+  type: 'LINK';
+  imageUrl: string;
+}

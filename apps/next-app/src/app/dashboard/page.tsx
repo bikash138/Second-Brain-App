@@ -9,10 +9,22 @@ import { useNotes } from '@/hooks/useNotes'
 import { Typewriter } from 'react-simple-typewriter';
 import FadeIn from '@/components/FadeIn';
 import axios from 'axios';
+import SearchCard from '@/components/Dashboard/SearchCard';
 
 function App() {
   const { notes, addNote, searchNotes, filterNotesByType } = useNotes();
-  const[allThoughts, setAllThoughts] = useState([])
+  interface SearchResult {
+    id: string;
+    metadata: {
+      title: string;
+      type: string;
+      createdAt: string;
+    };
+    pageContent: string;
+  }
+
+  const[allThoughts, setAllThoughts] = useState<any[]>([])
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -34,6 +46,8 @@ function App() {
     return filteredNotes;
   };
 
+  
+
   useEffect(()=>{
     const getAllThought = async() => {
     try{
@@ -46,6 +60,10 @@ function App() {
   }
   getAllThought()
   },[])
+
+  const sortedThoughts = [...allThoughts].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
 
   const filteredNotes = getFilteredNotes();
 
@@ -97,7 +115,20 @@ function App() {
         <p className="text-gray-400 text-lg mb-8 text-center">
           Capture your ideas in any format. Search and organize your digital brain instantly
         </p>
-        <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
+        <SearchBar setSearchResults={setSearchResults} searchResults={searchResults}/>
+        <div className='space-y-4'>
+          {
+            searchResults.map((result) => (
+              <SearchCard
+                key={result.id}
+                title={result.metadata.title}
+                content={result.pageContent}
+                type={result.metadata.type}
+                date={result.metadata.createdAt}
+              />
+            ))
+          }
+        </div>
       </div>
 
       {/* Main Content (hidden behind header, scrolls into view) */}
@@ -130,7 +161,7 @@ function App() {
               allThoughts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
                   {
-                    allThoughts.map((thought, index)=>(
+                    sortedThoughts.map((thought, index)=>(
                       <NoteCard
                           key={index}
                           note={thought}

@@ -1,26 +1,40 @@
 import React, { useState } from 'react';
-import { Search, Sparkles } from 'lucide-react';
+import { ArrowRight, MoveRight, Search, Sparkles, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { ThreeDots } from 'react-loader-spinner';
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
-  searchQuery: string;
+  setResults: []
 }
 
-export default function SearchBar({ onSearch, searchQuery }: SearchBarProps) {
+//@ts-ignore
+export default function SearchBar({setSearchResults, searchResults}) {
 
   const {
     handleSubmit,
-    register
-  } = useForm()
+    register,
+    reset
+  } = useForm({
+    defaultValues:{
+      search: ""
+    }
+  })
 
   //@ts-ignore
   const onsubmit = async(data) => {
-    const result = await axios.post('/api/search', data)
-    console.log(result.data?.results)
+    setLoading(true)
+    try {
+      const result = await axios.post('/api/search', data);
+      setSearchResults(result.data?.results);
+      // console.log(result.data?.results);
+    }finally {
+      reset();
+      setLoading(false);
   }
-
+  }
+  
+  const [loading, setLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -43,17 +57,49 @@ export default function SearchBar({ onSearch, searchQuery }: SearchBarProps) {
             </div>
           </div>
           
-          <form onSubmit={handleSubmit(onsubmit)}>
+          <form onSubmit={handleSubmit(onsubmit)} className="flex w-full">
             <input
               type="text"
+              autoComplete="off"
               {...register('search')}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               placeholder="Ask anything or search your notes..."
-            className="flex-1 ml-4 text-lg bg-transparent border-none outline-none placeholder-gray-500 text-white"
+              className="block w-full pl-4 text-lg bg-transparent border-none outline-none placeholder-gray-500 text-white"
             />
-            <button className='cursor-pointer pointer ml-6'>
-              Search
+            <button
+              type={searchResults && searchResults.length > 0 ? "button" : "submit"}
+              className={`w-12 ${!loading ? 'cursor-pointer' : 'cursor-default'}`}
+              disabled={loading}
+              onClick={
+                searchResults && searchResults.length > 0
+                  ? (e) => {
+                      e.preventDefault();
+                      setSearchResults([]);
+                    }
+                  : undefined
+              }
+            >
+              {loading ? (
+                <ThreeDots
+                visible={true}
+                height=""
+                width="35"
+                radius="9"
+                color='#DDA0DD'
+              />
+                // <svg className="animate-spin h-6 w-6 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                //   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                //   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                // </svg>
+              ) : (
+
+                searchResults && searchResults.length > 0 ?(
+                  <X className="text-gray-400 w-6 hover:text-red-400" />
+                ) : (
+                  <MoveRight className="text-gray-400 w-6 hover:text-gray-100" />
+                )
+              )}
             </button>
           </form>
         </div>
