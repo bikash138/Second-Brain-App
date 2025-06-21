@@ -13,6 +13,7 @@
     "@langchain/qdrant": "^0.1.2",
     "@repo/database": "workspace:*",
     "@repo/queue": "workspace:*",
+    "@types/react-scroll": "^1.8.10",
     "axios": "^1.10.0",
     "lucide-react": "^0.517.0",
     "next": "15.3.3",
@@ -21,6 +22,7 @@
     "react-hook-form": "^7.58.1",
     "react-intersection-observer": "^9.16.0",
     "react-loader-spinner": "^6.1.6",
+    "react-scroll": "^1.9.3",
     "react-simple-typewriter": "^5.0.1"
   },
   "devDependencies": {

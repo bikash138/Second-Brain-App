@@ -37,6 +37,7 @@ model Thought {
   content     String?
   url         String?
   type        ItemType
+  pinned      Boolean   @default(false)
   createdAt   DateTime  @default(now())
   admin       User      @relation(fields: [adminId], references: [id])
 }

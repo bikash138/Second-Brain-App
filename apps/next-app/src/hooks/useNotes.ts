@@ -5,85 +5,36 @@ export function useNotes() {
   const [notes, setNotes] = useState<Note[]>([]);
 
   // Load notes from localStorage on mount
-  useEffect(() => {
-    const savedNotes = localStorage.getItem('notes');
-    if (savedNotes) {
-      const parsedNotes = JSON.parse(savedNotes).map((note: any) => ({
-        ...note,
-        createdAt: new Date(note.createdAt),
-        updatedAt: new Date(note.updatedAt),
-      }));
-      setNotes(parsedNotes);
-    } else {
-      // Add some sample notes for demo
-      const sampleNotes: Note[] = [
-        {
-          id: '1',
-          type: 'text',
-          title: 'Welcome to Your Dark Notes!',
-          content: 'This is your beautiful dark-themed note-taking app. You can add text notes, YouTube videos, images, and documents. Use the sidebar to filter by type and start organizing your thoughts!',
-          color: '#FFD700',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: '2',
-          type: 'youtube',
-          title: 'Inspiring TED Talk',
-          content: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-          color: '#87CEEB',
-          createdAt: new Date(Date.now() - 86400000),
-          updatedAt: new Date(Date.now() - 86400000),
-        } as YouTubeNote,
-        {
-          id: '3',
-          type: 'text',
-          title: 'Project Ideas',
-          content: '• Build a personal portfolio website\n• Learn a new programming language\n• Start a side project\n• Contribute to open source\n• Create a mobile app',
-          color: '#98FB98',
-          createdAt: new Date(Date.now() - 172800000),
-          updatedAt: new Date(Date.now() - 172800000),
-        },
-        {
-          id: '4',
-          type: 'image',
-          title: 'Beautiful Landscape',
-          content: 'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg',
-          color: '#FFB6C1',
-          createdAt: new Date(Date.now() - 259200000),
-          updatedAt: new Date(Date.now() - 259200000),
-        } as ImageNote,
-        {
-          id: '5',
-          type: 'document',
-          title: 'Important Document.pdf',
-          content: 'This is a sample document note',
-          color: '#DDA0DD',
-          createdAt: new Date(Date.now() - 345600000),
-          updatedAt: new Date(Date.now() - 345600000),
-        } as DocumentNote,
-      ];
+  // useEffect(() => {
+  //   const savedNotes = localStorage.getItem('notes');
+  //   if (savedNotes) {
+  //     const parsedNotes = JSON.parse(savedNotes).map((note: any) => ({
+  //       ...note,
+  //       createdAt: new Date(note.createdAt),
+  //       updatedAt: new Date(note.updatedAt),
+  //     }));
+  //     setNotes(parsedNotes);
+  //   } else { 
+  //     // Add YouTube thumbnails and other properties for sample notes
+  //     const updatedSampleNotes = sampleNotes.map(note => {
+  //       if (note.type === 'youtube') {
+  //         const youtubeNote = note as YouTubeNote;
+  //         youtubeNote.videoId = 'dQw4w9WgXcQ';
+  //         youtubeNote.thumbnail = `https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg`;
+  //       } else if (note.type === 'image') {
+  //         const imageNote = note as ImageNote;
+  //         imageNote.imageUrl = note.content;
+  //       } else if (note.type === 'document') {
+  //         const docNote = note as DocumentNote;
+  //         docNote.fileName = 'Important Document.pdf';
+  //         docNote.fileType = 'PDF';
+  //       }
+  //       return note;
+  //     });
       
-      // Add YouTube thumbnails and other properties for sample notes
-      const updatedSampleNotes = sampleNotes.map(note => {
-        if (note.type === 'youtube') {
-          const youtubeNote = note as YouTubeNote;
-          youtubeNote.videoId = 'dQw4w9WgXcQ';
-          youtubeNote.thumbnail = `https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg`;
-        } else if (note.type === 'image') {
-          const imageNote = note as ImageNote;
-          imageNote.imageUrl = note.content;
-        } else if (note.type === 'document') {
-          const docNote = note as DocumentNote;
-          docNote.fileName = 'Important Document.pdf';
-          docNote.fileType = 'PDF';
-        }
-        return note;
-      });
-      
-      setNotes(updatedSampleNotes);
-    }
-  }, []);
+  //     setNotes(updatedSampleNotes);
+  //   }
+  // }, []);
 
   // Save notes to localStorage whenever notes change
   useEffect(() => {
@@ -100,26 +51,26 @@ export function useNotes() {
     };
 
     // Handle YouTube notes
-    if (noteData.type === 'youtube' && noteData.content) {
-      const videoId = extractYouTubeId(noteData.content);
-      if (videoId) {
-        (newNote as YouTubeNote).videoId = videoId;
-        (newNote as YouTubeNote).thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-      }
-    }
+    // if (noteData.type === 'youtube' && noteData.content) {
+    //   const videoId = extractYouTubeId(noteData.content);
+    //   if (videoId) {
+    //     (newNote as YouTubeNote).videoId = videoId;
+    //     (newNote as YouTubeNote).thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    //   }
+    // }
 
     // Handle image notes
-    if (noteData.type === 'image' && noteData.content) {
-      (newNote as ImageNote).imageUrl = noteData.content;
-    }
+    // if (noteData.type === 'image' && noteData.content) {
+    //   (newNote as ImageNote).imageUrl = noteData.content;
+    // }
 
     // Handle document notes
-    if (noteData.type === 'document' && noteData.content) {
-      const fileName = noteData.title || 'Document';
-      const fileExtension = fileName.split('.').pop()?.toUpperCase() || 'FILE';
-      (newNote as DocumentNote).fileName = fileName;
-      (newNote as DocumentNote).fileType = fileExtension;
-    }
+    // if (noteData.type === 'document' && noteData.content) {
+    //   const fileName = noteData.title || 'Document';
+    //   const fileExtension = fileName.split('.').pop()?.toUpperCase() || 'FILE';
+    //   (newNote as DocumentNote).fileName = fileName;
+    //   (newNote as DocumentNote).fileType = fileExtension;
+    // }
 
     setNotes(prev => [newNote, ...prev]);
   };

@@ -20,72 +20,72 @@ export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
     }).format(date);
   };
 
-  const renderPreview = () => {
-    switch (note.type) {
-      case 'youtube':
-        const youtubeNote = note as YouTubeNote;
-        return (
-          <div className="relative mb-3 rounded-lg overflow-hidden">
-            <img
-              src={youtubeNote.thumbnail}
-              alt="YouTube thumbnail"
-              className="w-full h-32 object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-              <div className="bg-red-600 rounded-full p-2">
-                <Play className="w-6 h-6 text-white fill-current" />
-              </div>
-            </div>
-          </div>
-        );
+  // const renderPreview = () => {
+  //   switch (note.type) {
+  //     case 'VIDEO':
+  //       const youtubeNote = note as YouTubeNote;
+  //       return (
+  //         <div className="relative mb-3 rounded-lg overflow-hidden">
+  //           <img
+  //             src={youtubeNote.thumbnail}
+  //             alt="YouTube thumbnail"
+  //             className="w-full h-32 object-cover"
+  //           />
+  //           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+  //             <div className="bg-red-600 rounded-full p-2">
+  //               <Play className="w-6 h-6 text-white fill-current" />
+  //             </div>
+  //           </div>
+  //         </div>
+  //       );
       
-      case 'image':
-        const imageNote = note as ImageNote;
-        return (
-          <div className="mb-3 rounded-lg overflow-hidden">
-            <img
-              src={imageNote.imageUrl}
-              alt="Note image"
-              className="w-full h-32 object-cover"
-            />
-          </div>
-        );
+  //     // case 'image':
+  //     //   const imageNote = note as ImageNote;
+  //     //   return (
+  //     //     <div className="mb-3 rounded-lg overflow-hidden">
+  //     //       <img
+  //     //         src={imageNote.imageUrl}
+  //     //         alt="Note image"
+  //     //         className="w-full h-32 object-cover"
+  //     //       />
+  //     //     </div>
+  //     //   );
       
-      case 'document':
-        const docNote = note as DocumentNote;
-        return (
-          <div className="mb-3 flex items-center space-x-3 p-3 bg-gray-800 rounded-lg">
-            <div className="p-2 bg-blue-600 rounded-lg">
-              <FileText className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">
-                {docNote.fileName}
-              </p>
-              <p className="text-xs text-gray-400 uppercase">
-                {docNote.fileType}
-              </p>
-            </div>
-          </div>
-        );
+  //     // case 'document':
+  //       const docNote = note as DocumentNote;
+  //       return (
+  //         <div className="mb-3 flex items-center space-x-3 p-3 bg-gray-800 rounded-lg">
+  //           <div className="p-2 bg-blue-600 rounded-lg">
+  //             <FileText className="w-6 h-6 text-white" />
+  //           </div>
+  //           <div className="flex-1 min-w-0">
+  //             <p className="text-sm font-medium text-white truncate">
+  //               {docNote.fileName}
+  //             </p>
+  //             <p className="text-xs text-gray-400 uppercase">
+  //               {docNote.fileType}
+  //             </p>
+  //           </div>
+  //         </div>
+  //       );
       
-      default:
-        return null;
-    }
-  };
+  //     default:
+  //       return null;
+  //   }
+  // };
 
-  const getIconForType = () => {
-    switch (note.type) {
-      case 'youtube':
-        return <Play className="w-4 h-4" />;
-      case 'image':
-        return <ImageIcon className="w-4 h-4" />;
-      case 'document':
-        return <FileText className="w-4 h-4" />;
-      default:
-        return <FileX className="w-4 h-4" />;
-    }
-  };
+  // const getIconForType = () => {
+  //   switch (note.type) {
+  //     case 'youtube':
+  //       return <Play className="w-4 h-4" />;
+  //     case 'image':
+  //       return <ImageIcon className="w-4 h-4" />;
+  //     case 'document':
+  //       return <FileText className="w-4 h-4" />;
+  //     default:
+  //       return <FileX className="w-4 h-4" />;
+  //   }
+  // };
 
   return (
     <div
@@ -94,7 +94,7 @@ export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
       style={{ borderLeftColor: note.color }}
     >
       <div className="p-4">
-        {renderPreview()}
+        {/* {renderPreview()} */}
         
         <div className="flex items-start justify-between mb-2">
           <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2">
@@ -103,7 +103,7 @@ export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onEdit();
+              // onEdit();
             }}
             className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-700 rounded-md transition-all duration-200"
           >
@@ -117,13 +117,13 @@ export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
           </p>
         ) : (
           <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 mb-3">
-            {note.url}
+            {/* {note.url} */}
           </p>
         )}
         
         <div className="flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center space-x-1">
-            {getIconForType()}
+            {/* {getIconForType()} */}
             <span className="capitalize">{note.type}</span>
           </div>
           <div className="flex items-center space-x-1">
