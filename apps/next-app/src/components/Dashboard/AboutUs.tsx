@@ -6,28 +6,28 @@ export default function AboutSection() {
     {
       name: 'Twitter',
       icon: Twitter,
-      href: 'https://twitter.com/yourcompany',
+      href: 'https://x.com/Bikash__Shaw',
       color: 'hover:text-blue-400',
       bgColor: 'hover:bg-blue-400/10'
     },
     {
       name: 'LinkedIn',
       icon: Linkedin,
-      href: 'https://linkedin.com/company/yourcompany',
+      href: 'https://www.linkedin.com/in/bikash-shaw-5ab74727b/',
       color: 'hover:text-blue-600',
       bgColor: 'hover:bg-blue-600/10'
     },
     {
       name: 'Email',
       icon: Mail,
-      href: 'mailto:contact@yourcompany.com',
+      href: 'mailto:vshaw138@gmail.com',
       color: 'hover:text-green-400',
       bgColor: 'hover:bg-green-400/10'
     },
     {
       name: 'GitHub',
       icon: Github,
-      href: 'https://github.com/yourcompany',
+      href: 'https://github.com/bikash138',
       color: 'hover:text-purple-400',
       bgColor: 'hover:bg-purple-400/10'
     }
@@ -76,27 +76,6 @@ export default function AboutSection() {
               to capture their thoughts, ideas, and inspirations. We're building more than just a 
               note-taking app – we're creating a digital sanctuary for your creativity and productivity.
             </p>
-          </div>
-        </div>
-
-        {/* Team Section */}
-        <div className="mb-16">
-          <h3 className="text-3xl font-bold text-white text-center mb-12">Meet Our Team</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {teamMembers.map((member, index) => (
-              <div key={index} className="bg-gray-800 rounded-xl p-6 text-center hover:bg-gray-750 transition-colors duration-300">
-                <div className="relative mb-4">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-gray-700"
-                  />
-                </div>
-                <h4 className="text-xl font-semibold text-white mb-1">{member.name}</h4>
-                <p className="text-blue-400 font-medium mb-3">{member.role}</p>
-                <p className="text-gray-400 text-sm leading-relaxed">{member.bio}</p>
-              </div>
-            ))}
           </div>
         </div>
 

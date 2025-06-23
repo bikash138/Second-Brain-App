@@ -10,6 +10,7 @@ export async function GET(req: NextRequest){
                 adminId: "90a32bab-efe8-41d8-814c-dd3bfcaee0e0"
             },
             select:{
+                id: true,
                 title: true,
                 type: true,
                 url: true,

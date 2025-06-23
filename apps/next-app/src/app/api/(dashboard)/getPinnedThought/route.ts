@@ -1,33 +1,24 @@
 import { prisma } from "@repo/database/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const { thoughtId } = await req.json();
-
     // Fetch the current note
-    const currentThought = await prisma.thought.findUnique({
-      where: { id: thoughtId },
-      select: { pinned: true },
-    });
-
-    if (!currentThought) {
-      return NextResponse.json(
-        { message: "Thought not found" },
-        { status: 404 }
-      );
-    }
-
-    // Toggle the pinned value
-    const updatedThought = await prisma.thought.update({
-      where: { id: thoughtId },
-      data: { pinned: !currentThought.pinned },
-      select: { id: true, pinned: true },
+    const favouriteThoughts = await prisma.thought.findMany({
+      where: { favourites: true },
+      select: { title: true,
+        id: true,
+        type: true,
+        url: true,
+        content: true,
+        createdAt: true,
+        favourites: true
+      },
     });
 
     return NextResponse.json({
-      message: `Thought ${updatedThought.pinned ? "pinned" : "unpinned"} successfully`,
-      thought: updatedThought,
+      message: `Pinned THoughts fethed successfully`,
+      thought: favouriteThoughts,
     });
   } catch (error) {
     console.log(error);

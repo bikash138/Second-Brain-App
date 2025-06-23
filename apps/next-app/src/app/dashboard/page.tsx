@@ -7,7 +7,6 @@ import NoteCard from "@/components/Dashboard/NoteCard"
 import AddNoteModal from "@/components/Dashboard/AddNoteModal"
 import { useNotes } from '@/hooks/useNotes'
 import { Typewriter } from 'react-simple-typewriter';
-import FadeIn from '@/components/FadeIn';
 import axios from 'axios';
 import SearchCard from '@/components/Dashboard/SearchCard';
 import AllThoughtsSection from '@/components/Dashboard/AllThoughtsSection';
@@ -28,6 +27,7 @@ function App() {
   }
 
   const[allThoughts, setAllThoughts] = useState<any[]>([])
+  const [pinnedThoughts, setPinnedThoughts] =useState<any[]>([])
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -65,9 +65,51 @@ function App() {
   getAllThought()
   },[])
 
+  useEffect(()=>{
+    const getPinnedThoughts = async() => {
+    try{
+      const pinnedThoughts = await axios.get("/api/getPinnedThought")
+      setPinnedThoughts(pinnedThoughts.data?.thought)
+      console.log(pinnedThoughts.data?.thought)
+    }catch(error){
+      console.log(error)
+    }
+  }
+  getPinnedThoughts()
+  },[])
+
   const sortedThoughts = [...allThoughts].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
+
+
+  const [favouriteIds, setFavouriteIds] = useState<string[]>(
+  pinnedThoughts ? pinnedThoughts.map((thought) => thought.id) : []
+);
+
+useEffect(() => {
+  setFavouriteIds(pinnedThoughts ? pinnedThoughts.map((thought) => thought.id) : []);
+}, [pinnedThoughts]);
+
+const handleToggleFavourite = async (noteId: string) => {
+  setFavouriteIds(ids =>
+    ids.includes(noteId)
+      ? ids.filter(id => id !== noteId)
+      : [...ids, noteId]
+  );
+  try {
+    await axios.patch('/api/pinUnpinThought', { thoughtId: noteId });
+  } catch (error) {
+    // Optionally revert local state if API fails
+    setFavouriteIds(ids =>
+      ids.includes(noteId)
+        ? ids.filter(id => id !== noteId)
+        : [...ids, noteId]
+    );
+    alert("Failed to update favourite status!");
+  }
+};
+
 
   // const filteredNotes = getFilteredNotes();
 
@@ -141,10 +183,18 @@ function App() {
       <div className="flex-1 lg:ml-0">
         {/* Main Content */}
         <Element name='favourites'>
-          <Favourites/>
+          <Favourites 
+            pinnedThoughts={pinnedThoughts}
+            favouriteIds={favouriteIds}
+            onToggleFavourite={handleToggleFavourite}
+          />
         </Element>
         <Element name="thoughts">
-          <AllThoughtsSection sortedThoughts={sortedThoughts} />
+          <AllThoughtsSection 
+            sortedThoughts={sortedThoughts}
+            favouriteIds={favouriteIds}
+            onToggleFavourite={handleToggleFavourite}
+          />
         </Element>
         <Element name='aboutus'>
           <AboutSection/>

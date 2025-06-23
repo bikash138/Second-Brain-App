@@ -15,8 +15,8 @@ export default function NavBar({ className = '' }: NavbarProps) {
   const navItems = [
     { label: "Home", href: "#", color: 'text-blue-400 hover:text-blue-300' },
     { label: 'Search', href: 'search', color: 'text-gray-300 hover:text-white' },
-    { label: 'Thoughts', href: 'thoughts', color: 'text-gray-300 hover:text-white' },
     { label: 'Favourites', href: 'favourites', color: 'text-gray-300 hover:text-white' },
+    { label: 'Thoughts', href: 'thoughts', color: 'text-gray-300 hover:text-white' },
     { label: 'About Us', href: 'aboutus', color: 'text-gray-300 hover:text-white' },
   ];
 

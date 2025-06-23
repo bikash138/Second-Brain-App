@@ -1,14 +1,18 @@
-import React from 'react';
-import { FileText, Play, Image as ImageIcon, FileX, Calendar, Edit3 } from 'lucide-react';
+import React, { useState } from 'react';
+import { FileText, Play, Image as ImageIcon, FileX, Calendar, Edit3, Star } from 'lucide-react';
 import { Note, YouTubeNote, ImageNote, DocumentNote } from '@/Types/types'
+import axios from 'axios';
 
 interface NoteCardProps {
   note: Note;
+  isFavourite: boolean,
+  onToggleFavourite: any
   onClick?: () => void;
   onEdit?: () => void;
 }
 
-export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
+export default function NoteCard({ note, isFavourite, onClick, onEdit, onToggleFavourite }: NoteCardProps) {
+
   const formatDate = (dateString: string | Date) => {
     const date = typeof dateString === "string" ? new Date(dateString) : dateString;
     return new Intl.DateTimeFormat('en-US', {
@@ -87,6 +91,16 @@ export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
   //   }
   // };
 
+  const pinUnpinThought = async() => {
+    try{
+      await axios.patch('/api/pinUnpinThought', { thoughtId: note.id })
+      console.log(`Your Thought with noteId: ${note.id} is successfully changed`)
+    }catch(error){
+      console.log('Error while pinning and unpinning your thought')
+      console.log(error)
+    }
+  }
+
   return (
     <div
       onClick={onClick}
@@ -100,15 +114,35 @@ export default function NoteCard({ note, onClick, onEdit }: NoteCardProps) {
           <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2">
             {note.title}
           </h3>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // onEdit();
-            }}
-            className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-700 rounded-md transition-all duration-200"
-          >
-            <Edit3 className="w-4 h-4 text-gray-400" />
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                onToggleFavourite();
+              }}
+              className="transition-colors duration-300"
+              aria-label={isFavourite ? "Remove from favourites" : "Add to favourites"}
+            >
+              <Star
+                className={`cursor-pointer w-5 h-5 transition-all duration-300 ${
+                  isFavourite
+                    ? "text-yellow-400 scale-110 drop-shadow"
+                    : "text-gray-400 hover:text-yellow-300"
+                }`}
+                fill={isFavourite ? "#facc15" : "none"}
+              />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                // onEdit && onEdit();
+              }}
+              className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-700 rounded-md transition-all duration-200"
+              aria-label="Edit note"
+            >
+              <Edit3 className="w-4 h-4 text-gray-400" />
+            </button>
+          </div>
         </div>
         
         {note.content ? (
