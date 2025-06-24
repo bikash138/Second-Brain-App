@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { FileText, Play, Image as ImageIcon, FileX, Calendar, Edit3, Star } from 'lucide-react';
-import { Note, YouTubeNote, ImageNote, DocumentNote } from '@/Types/types'
-import axios from 'axios';
+import React from 'react';
+import { FileText, Play, Calendar, Edit3, Star, Unlink, Twitter } from 'lucide-react';
+import { Thought } from '@/Types/types'
 
 interface NoteCardProps {
-  note: Note;
+  note: Thought;
   isFavourite: boolean,
-  onToggleFavourite: any
+  onToggleFavourite: () => void
   onClick?: () => void;
   onEdit?: () => void;
 }
 
-export default function NoteCard({ note, isFavourite, onClick, onEdit, onToggleFavourite }: NoteCardProps) {
+export default function NoteCard({ note, isFavourite, onClick, onToggleFavourite }: NoteCardProps) {
 
   const formatDate = (dateString: string | Date) => {
     const date = typeof dateString === "string" ? new Date(dateString) : dateString;
@@ -78,40 +77,30 @@ export default function NoteCard({ note, isFavourite, onClick, onEdit, onToggleF
   //   }
   // };
 
-  // const getIconForType = () => {
-  //   switch (note.type) {
-  //     case 'youtube':
-  //       return <Play className="w-4 h-4" />;
-  //     case 'image':
-  //       return <ImageIcon className="w-4 h-4" />;
-  //     case 'document':
-  //       return <FileText className="w-4 h-4" />;
-  //     default:
-  //       return <FileX className="w-4 h-4" />;
-  //   }
-  // };
-
-  const pinUnpinThought = async() => {
-    try{
-      await axios.patch('/api/pinUnpinThought', { thoughtId: note.id })
-      console.log(`Your Thought with noteId: ${note.id} is successfully changed`)
-    }catch(error){
-      console.log('Error while pinning and unpinning your thought')
-      console.log(error)
+  const getIconForType = () => {
+    switch (note.type) {
+      case 'VIDEO':
+        return <Play className="w-4 h-4 text-red-500" />;
+      case 'TWEET':
+        return <Twitter className="w-4 h-4 text-blue-600" />;
+      case 'TEXT':
+        return <FileText className="w-4 h-4 text-green-800" />;
+      case 'LINK':
+        return <Unlink className="w-4 h-4 text-pink-300" />;
+      default:
+        return <Unlink className="w-4 h-4" />;
     }
-  }
+  };
 
   return (
     <div
       onClick={onClick}
-      className={`group relative bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border-l-4 hover:bg-slate-950`}
+      className={`group relative bg-black rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border-l-4 hover:bg-slate-900`}
       style={{ borderLeftColor: note.color }}
     >
-      <div className="p-4">
-        {/* {renderPreview()} */}
-        
+      <div className="p-4">        
         <div className="flex items-start justify-between mb-2">
-          <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2">
+          <h3 className="font-semibold text-blue-300 text-lg leading-tight line-clamp-2">
             {note.title}
           </h3>
           <div className="flex items-center space-x-2">
@@ -135,7 +124,6 @@ export default function NoteCard({ note, isFavourite, onClick, onEdit, onToggleF
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                // onEdit && onEdit();
               }}
               className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-700 rounded-md transition-all duration-200"
               aria-label="Edit note"
@@ -151,17 +139,17 @@ export default function NoteCard({ note, isFavourite, onClick, onEdit, onToggleF
           </p>
         ) : (
           <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 mb-3">
-            {/* {note.url} */}
+            {note.url}
           </p>
         )}
         
         <div className="flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center space-x-1">
-            {/* {getIconForType()} */}
-            <span className="capitalize">{note.type}</span>
+            {getIconForType()}
+            <span className="capitalize  text-green-400 mask-linear-from-neutral-950">{note.type}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <Calendar className="w-3 h-3" />
+            <Calendar className="w-3 h-3 text-blue-500" />
             <span>{formatDate(note.createdAt)}</span>
           </div>
         </div>

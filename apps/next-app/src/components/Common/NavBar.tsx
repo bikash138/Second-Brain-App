@@ -1,112 +1,127 @@
 'use client'
 import React, { useState } from 'react';
-import { Link, Element, scroller } from "react-scroll";
-import { Menu, X, ChevronDown } from 'lucide-react';
-import AllThoughtsSection from '../Dashboard/AllThoughtsSection';
+import { Menu, X } from 'lucide-react';
+import { Link } from "react-scroll";
 
-interface NavbarProps {
-  className?: string;
-}
 
-export default function NavBar({ className = '' }: NavbarProps) {
+const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
+
 
   const navItems = [
-    { label: "Home", href: "#", color: 'text-blue-400 hover:text-blue-300' },
     { label: 'Search', href: 'search', color: 'text-gray-300 hover:text-white' },
     { label: 'Favourites', href: 'favourites', color: 'text-gray-300 hover:text-white' },
     { label: 'Thoughts', href: 'thoughts', color: 'text-gray-300 hover:text-white' },
     { label: 'About Us', href: 'aboutus', color: 'text-gray-300 hover:text-white' },
   ];
 
-  const aboutDropdownItems = [
-    { label: 'About Us', href: '#' },
-    { label: 'Contact', href: '#' },
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Service', href: '#' },
-  ];
-
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const toggleAboutDropdown = () => {
-    setIsAboutDropdownOpen(!isAboutDropdownOpen);
-  };
-
   return (
-    <nav className={`bg-black/30 backdrop-blur-md border-b border-gray-800 sticky top-4 z-50 rounded-full mx-5 ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <div className="flex items-center space-x-2">
-              <div className="text-2xl font-bold text-white">
-                <span className="text-blue-400">;</span>-Pwned
+    <nav className="bg-black/50 backdrop-blur-md border-b border-gray-800 sticky top-4 z-50 mx-5 rounded-2xl lg:rounded-full">
+      {/* Desktop Navigation */}
+      <div className="hidden lg:block">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <div className="text-2xl font-bold">
+                <span className="text-green-400">;</span>--Pwned
               </div>
             </div>
-          </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:block">
+            {/* Desktop Navigation Links */}
             <div className="flex items-center space-x-8">
               {navItems.map((item, index) => (
-                <Link key={index} to={item.href} smooth={true} duration={800}
-                  className={`font-medium cursor-pointer transition-colors duration-200 ${item.color}`}
+                <Link
+                  key={index}
+                  to={item.href}
+                  smooth={true}
+                  duration={800}
+                  spy={true}
+                  className={`font-medium cursor-pointer transition-colors duration-200 ${activeSection === item.href ? 'text-blue-400 ' : ''}`}
+                  onSetActive={() => setActiveSection(item.href)}
                 >
                   {item.label}
                 </Link>
-
-                // <a
-                //   key={index}
-                //   href={item.href}
-                //   className={`font-medium transition-colors duration-200 ${item.color}`}
-                // >
-                //   {item.label}
-                // </a>
               ))}
-              
-              {/* About Dropdown */}
-              {/* <div className="relative">
-                <button
-                  onClick={toggleAboutDropdown}
-                  className="flex items-center space-x-1 text-gray-300 hover:text-white font-medium transition-colors duration-200"
-                >
-                  <span>About</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isAboutDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-                
-                {isAboutDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 py-2 z-50">
-                    {aboutDropdownItems.map((item, index) => (
-                      <a
-                        key={index}
-                        href={item.href}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition-colors duration-200"
-                      >
-                        {item.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div> */}
+            </div>
+
+            {/* Dashboard Button */}
+            <div className="flex-shrink-0">
+              <button className="border border-pink-400 text-pink-400 font-medium px-6 py-2 rounded-lg transition-all duration-300 hover:bg-red-500/80 cursor-pointer hover:text-black">
+                Logout
+            </button>
             </div>
           </div>
-
-          {/* Dashboard Button - Desktop */}
-          <div className="hidden lg:block">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-colors duration-200">
-              Dashboard
-            </button>
-          </div>
-
-          {/* Mobile Menu */}
         </div>
       </div>
 
-      
+      {/* Mobile Navigation */}
+      <div className="lg:hidden">
+        <div className="px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Mobile Logo */}
+            <div className="flex-shrink-0">
+              <div className="text-xl font-bold">
+                <span className="text-green-400">;</span>--Pwned
+              </div>
+            </div>
+
+            {/* Mobile Dashboard and Menu Button */}
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleMobileMenu}
+                className="text-gray-300 hover:text-white p-2 cursor-pointer"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu Panel */}
+        {isMobileMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 z-10"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            {/* Mobile Menu Panel */}
+            <div className="bg-gray-900 border-t  border-slate-700 rounded-2xl absolute top-16 left-4 right-4 z-20">
+              <div className="px-4 pt-4 pb-6 space-y-4">
+                {navItems.map((item, index) => (
+                  <Link
+                    key={index}
+                    to={item.href}
+                    smooth={true}
+                    duration={800}
+                    spy={true}
+                    className={`block border-slate-700 py-2 border-b font-medium cursor-pointer transition-colors duration-200 ${activeSection === item.href ? 'text-blue-400 ' : ''}`}
+                    onSetActive={() => setActiveSection(item.href)}
+                    onClick={() => setIsMobileMenuOpen(false)} // close menu on link click
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <button className="min-w-full border border-pink-400 text-pink-400 font-medium px-6 py-2 rounded-lg transition-all duration-300 hover:bg-red-500/80 cursor-pointer hover:text-black">
+                  Logout
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </nav>
-    
   );
-}
+};
+
+export default Navbar;

@@ -1,42 +1,36 @@
-import React, { useState } from 'react'
+import React from 'react'
 import FadeIn from '@/components/FadeIn';
 import NoteCard from './NoteCard';
-import axios from 'axios';
+import { Thought } from '@/Types/types';
 
-//@ts-ignore
-const AllThoughtsSection = ({sortedThoughts,favouriteIds, onToggleFavourite}) => {
+interface FavouriteSectionProps{
+  sortedThoughts: Thought[]
+  favouriteIds: string[]
+  onToggleFavourite: (id: string) => void
+}
+
+const AllThoughtsSection = ({sortedThoughts,favouriteIds, onToggleFavourite}: FavouriteSectionProps) => {
   return (
     <FadeIn>
-      
-      <div className="flex-1 lg:ml-0 my-20">
+      <div className="flex-1 lg:ml-0 my-20 border-t border-gray-800">
         {/* Main Content Area */}
         <div className="px-4 sm:px-6 lg:px-8 py-8 min-w-full">
           {/* Results Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
               <h2 className="text-2xl font-semibold text-white">
-                {/* {getFilterTitle()} */}
               </h2>
-              {/* {(searchQuery || selectedFilter !== 'all') && (
-                <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedFilter('all');
-                  }}
-                  className="text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors duration-200"
-                >
-                  Clear filters
-                </button>
-              )} */}
             </div>
           </div>
           {
             sortedThoughts.length > 0 ? (
               <>
-              <h1 className='text-3xl'>All Thoughts</h1>
+              <h1 
+                className="text-3xl font-bold mb-8 text-shadow-indigo-50 bg-clip-text drop-shadow-lg tracking-tight">
+                  Recent Thoughts
+              </h1>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
                 {
-                    //@ts-ignore
                   sortedThoughts.map((thought)=>(
                     <NoteCard
                         key={thought.id}

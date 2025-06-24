@@ -1,8 +1,12 @@
 import { useInView } from 'react-intersection-observer';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 
-//@ts-ignore
-export default function FadeIn({ children, threshold = 0.1 }) {
+interface FadeInProps {
+  children: ReactNode;
+  threshold?: number;
+}
+
+export default function FadeIn({ children, threshold = 0.1 }: FadeInProps) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold });
   const [visible, setVisible] = useState(false);
 

@@ -1,36 +1,46 @@
-export interface Note {
+export interface Thought {
   id: string;
   type: 'TEXT' | 'VIDEO' | 'TWEET' | 'LINK';
   title: string;
-  content: string;
-  color: string;
+  content?: string;
+  url?: string
   createdAt: Date;
-  updatedAt: Date;
+  color?: string
 }
 
-export interface YouTubeNote extends Note {
+export interface SearchResult {
+  id: string;
+  metadata: {
+    title: string;
+    type: string;
+    createdAt: string;
+  };
+  pageContent: string;
+}
+
+export interface Video extends Thought {
   type: 'VIDEO';
   videoId: string;
   thumbnail: string;
 }
 
-export interface TweetNote extends Note {
+export interface Tweet extends Thought {
   type: 'TWEET';
   imageUrl: string;
 }
 
-export interface LinkNote extends Note {
+export interface Link extends Thought {
   type: 'LINK';
   url: string;
 }
 
-export interface DocumentNote extends Note {
+export interface Text extends Thought {
   type: 'LINK';
   fileName: string;
   fileType: string
 }
 
-export interface ImageNote extends Note {
+export interface Image extends Thought {
   type: 'LINK';
   imageUrl: string;
 }

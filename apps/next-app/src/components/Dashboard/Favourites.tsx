@@ -1,74 +1,60 @@
-import React, { useState } from 'react'
+import React from 'react'
 import FadeIn from '@/components/FadeIn';
 import NoteCard from './NoteCard';
+import { Thought } from '@/Types/types';
 
-//@ts-ignore
-const Favourites = ({pinnedThoughts, favouriteIds, onToggleFavourite}) => {
+interface FavouriteSectionProps{
+  favouriteThoughts: Thought[]
+  favouriteIds: string[]
+  onToggleFavourite: (id: string) => void
+}
+
+const Favourites = ({favouriteThoughts, favouriteIds, onToggleFavourite}: FavouriteSectionProps) => {
   return (
     <FadeIn>
-      <div className="flex-1 lg:ml-0 my-20">
+      <div className="flex-1 lg:ml-0 my-20 border-t border-gray-800">
         {/* Main Content Area */}
         <div className="px-4 sm:px-6 lg:px-8 py-8 min-w-full">
           {/* Results Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
               <h2 className="text-2xl font-semibold text-white">
-                {/* {getFilterTitle()} */}
               </h2>
-              {/* {(searchQuery || selectedFilter !== 'all') && (
-                <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedFilter('all');
-                  }}
-                  className="text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors duration-200"
-                >
-                  Clear filters
-                </button>
-              )} */}
             </div>
           </div>
           {
-            pinnedThoughts.length > 0 ? (
+            favouriteThoughts.length > 0 ? (
               <>
-              <h1 className='text-3xl'>Favourites</h1>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
-                {
-                    //@ts-ignore
-                  pinnedThoughts.map((thought)=>(
-                    <NoteCard
-                        key={thought.id}
-                        note={thought}
-                        isFavourite={favouriteIds.includes(thought.id)}
-                        onToggleFavourite={() => onToggleFavourite(thought.id)}
-                      />
-                  ))
-                }
-              </div>
+                <h1 
+                  className="text-3xl font-bold mb-8 text-shadow-indigo-50 bg-clip-text drop-shadow-lg tracking-tight">
+                    Favourites
+                </h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+                  {
+                    favouriteThoughts.map((thought)=>(
+                      <NoteCard
+                          key={thought.id}
+                          note={thought}
+                          isFavourite={favouriteIds.includes(thought.id)}
+                          onToggleFavourite={() => onToggleFavourite(thought.id)}
+                        />
+                    ))
+                  }
+                </div>
               </>
             ) : (
-            //   <div className="text-center py-16">
-            //   <div className="max-w-md mx-auto">
-            //     <div className="bg-gray-800 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            //       <Plus className="w-8 h-8 text-gray-400" />
-            //     </div>
-            //     <h3 className="text-xl font-semibold text-white mb-2">
-            //       {searchQuery || selectedFilter !== 'all' ? 'No notes found' : 'No notes yet'}
-            //     </h3>
-            //     <p className="text-gray-400 mb-6">
-            //       {searchQuery || selectedFilter !== 'all'
-            //         ? 'Try adjusting your search terms or filters, or add a new note.'
-            //         : 'Start by creating your first note. You can add text, YouTube links, images, or documents.'}
-            //     </p>
-            //     <button
-            //       onClick={() => setIsAddModalOpen(true)}
-            //       className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl transition-colors duration-200"
-            //     >
-            //       Add Your First Note
-            //     </button>
-            //   </div>
-            // </div>
-            <div>Please add notes</div>
+              <div className="flex flex-col items-center justify-center py-20">
+                <div className="bg-blue-900/40 rounded-full w-20 h-20 flex items-center justify-center mb-6 shadow-lg">
+                  <svg className="w-10 h-10 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-semibold text-white mb-2">No notes in Favourites</h3>
+                <p className="text-gray-400 mb-4 text-center max-w-md">
+                  You haven&apos;t added any notes to your favourites yet.<br />
+                  Mark notes as favourites to see them here!
+                </p>
+              </div>
             )
           }
         </div>

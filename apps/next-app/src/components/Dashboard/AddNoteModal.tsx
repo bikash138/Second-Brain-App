@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { X, FileText, Play, Image as ImageIcon, Upload, Plus, Twitter, Link  } from 'lucide-react';
-import { Note } from '@/Types/types'
+import { X, FileText, Play, Plus, Twitter, Link  } from 'lucide-react';
 import {useForm} from 'react-hook-form'
-import LinkArea from './LinkArea';
 import axios from 'axios'
-import { enqueueNote } from '@repo/queue/enqueueNote'
+import { Thought } from '@/Types/types';
 
 interface AddNoteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddNote: (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  onAddNote: (note: Omit<Thought, 'id' | 'createdAt' | 'updatedAt'>) => void;
 }
 
 const TypeButton = [
@@ -30,7 +28,7 @@ const noteColors = [
   '#B0E0E6', // Powder Blue
 ];
 
-export default function AddNoteModal({ isOpen, onClose, onAddNote }: AddNoteModalProps) {
+export default function AddNoteModal({ isOpen, onClose }: AddNoteModalProps) {
 
   interface NoteForm {
     type: 'TEXT' | 'VIDEO' | 'TWEET' | 'LINK';
@@ -44,7 +42,6 @@ export default function AddNoteModal({ isOpen, onClose, onAddNote }: AddNoteModa
     handleSubmit,
     setValue,
     reset,
-    formState: { errors }
   } = useForm<NoteForm>({defaultValues: {
     type: 'TEXT',
     title: '',
@@ -75,7 +72,7 @@ export default function AddNoteModal({ isOpen, onClose, onAddNote }: AddNoteModa
           ? { type: data.type, title: data.title, content: data.content }
           : { type: data.type, title: data.title, url: data.url };
         
-      const response = await axios.post("/api/addThought", payload)
+      await axios.post("/api/addThought", payload)
       reset()
       resetForm()
       onClose()

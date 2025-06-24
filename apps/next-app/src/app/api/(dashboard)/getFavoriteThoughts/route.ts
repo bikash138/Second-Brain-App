@@ -1,7 +1,7 @@
 import { prisma } from "@repo/database/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     // Fetch the current note
     const favouriteThoughts = await prisma.thought.findMany({

@@ -1,9 +1,7 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { Plus } from 'lucide-react';
-import Sidebar from "@/components/Dashboard/Sidebar"
 import SearchBar from "@/components/Dashboard/SearchBar"
-import NoteCard from "@/components/Dashboard/NoteCard"
 import AddNoteModal from "@/components/Dashboard/AddNoteModal"
 import { useNotes } from '@/hooks/useNotes'
 import { Typewriter } from 'react-simple-typewriter';
@@ -13,45 +11,17 @@ import AllThoughtsSection from '@/components/Dashboard/AllThoughtsSection';
 import {Element} from 'react-scroll'
 import AboutSection from "@/components/Dashboard/AboutUs"
 import Favourites from '@/components/Dashboard/Favourites';
+import { Thought, SearchResult } from '@/Types/types'
 
 function App() {
-  const { notes, addNote, searchNotes, filterNotesByType } = useNotes();
-  interface SearchResult {
-    id: string;
-    metadata: {
-      title: string;
-      type: string;
-      createdAt: string;
-    };
-    pageContent: string;
-  }
+  const {addNote} = useNotes();
 
-  const[allThoughts, setAllThoughts] = useState<any[]>([])
-  const [pinnedThoughts, setPinnedThoughts] =useState<any[]>([])
+  const[allThoughts, setAllThoughts] = useState<Thought[]>([])
+  const [favouriteThoughts, setFavouriteThoughts] =useState<Thought[]>([])
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('all');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const mainContentRef = useRef<HTMLDivElement>(null);
 
-  // Apply both search and filter
-  // const getFilteredNotes = () => {
-
-
-  //   let filteredNotes = filterNotesByType(selectedFilter);
-  //   if (searchQuery.trim()) {
-  //     filteredNotes = filteredNotes.filter(note =>
-  //       note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //       note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //       note.type.toLowerCase().includes(searchQuery.toLowerCase())
-  //     );
-  //   }
-  //   return filteredNotes;
-  // };
-
-  
-
+  // Optimisation to be done using React Query or SWR
   useEffect(()=>{
     const getAllThought = async() => {
     try{
@@ -68,8 +38,8 @@ function App() {
   useEffect(()=>{
     const getPinnedThoughts = async() => {
     try{
-      const pinnedThoughts = await axios.get("/api/getPinnedThought")
-      setPinnedThoughts(pinnedThoughts.data?.thought)
+      const pinnedThoughts = await axios.get("/api/getFavoriteThoughts")
+      setFavouriteThoughts(pinnedThoughts.data?.thought)
       console.log(pinnedThoughts.data?.thought)
     }catch(error){
       console.log(error)
@@ -82,82 +52,53 @@ function App() {
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
-
   const [favouriteIds, setFavouriteIds] = useState<string[]>(
-  pinnedThoughts ? pinnedThoughts.map((thought) => thought.id) : []
-);
-
-useEffect(() => {
-  setFavouriteIds(pinnedThoughts ? pinnedThoughts.map((thought) => thought.id) : []);
-}, [pinnedThoughts]);
-
-const handleToggleFavourite = async (noteId: string) => {
-  setFavouriteIds(ids =>
-    ids.includes(noteId)
-      ? ids.filter(id => id !== noteId)
-      : [...ids, noteId]
+  favouriteThoughts ? favouriteThoughts.map((thought) => thought.id) : []
   );
-  try {
-    await axios.patch('/api/pinUnpinThought', { thoughtId: noteId });
-  } catch (error) {
-    // Optionally revert local state if API fails
+
+  useEffect(() => {
+    setFavouriteIds(favouriteThoughts ? favouriteThoughts.map((thought) => thought.id) : []);
+  }, [favouriteThoughts]);
+
+  const handleToggleFavourite = async (noteId: string) => {
     setFavouriteIds(ids =>
       ids.includes(noteId)
         ? ids.filter(id => id !== noteId)
         : [...ids, noteId]
     );
-    alert("Failed to update favourite status!");
-  }
-};
-
-
-  // const filteredNotes = getFilteredNotes();
-
-  const handleNoteClick = (noteId: string) => {
-    // Handle note click - could open in detail view
-    console.log('Note clicked:', noteId);
+    try {
+      await axios.patch('/api/markThought', { thoughtId: noteId });
+    } catch (error) {
+      console.log(error)
+      // Revert local state if API fails
+      setFavouriteIds(ids =>
+        ids.includes(noteId)
+          ? ids.filter(id => id !== noteId)
+          : [...ids, noteId]
+      );
+      alert("Failed to update favourite status!");
+    }
   };
-
-  const handleNoteEdit = (noteId: string) => {
-    // Handle note edit
-    console.log('Edit note:', noteId);
-  };
-
-  // const getFilterTitle = () => {
-  //   if (searchQuery) {
-  //     return `Search Results (${filteredNotes.length})`;
-  //   }
-    
-  //   switch (selectedFilter) {
-  //     case 'text':
-  //       return 'Text Notes';
-  //     case 'youtube':
-  //       return 'Video Notes';
-  //     case 'image':
-  //       return 'Image Notes';
-  //     case 'document':
-  //       return 'Document Notes';
-  //     default:
-  //       return 'All Notes';
-  //   }
-  // };
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col">
       {/* Header Section (Full Screen Overlay) */}
       <Element name='search'>
         <div className="h-screen flex flex-col items-center justify-center p-1 bg-gray-950 z-20 ">
-          <h1 className="text-4xl font-bold text-purple-400 mb-2 text-center">
-            <Typewriter
-              words={['Hi there! What’s on your mind today?']}
-              loop={1}
-              cursor
-              cursorStyle="_"
-              cursorColor='#DDA0DD'
-              typeSpeed={100}
-              deleteSpeed={50}
-              delaySpeed={1000}
-            />
+          <h1 className="text-4xl font-bold mb-2 text-center bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">
+            Hi there!{' '}
+            <span>
+              <Typewriter
+                words={["What’s on your mind today?"]}
+                loop={1}
+                cursor
+                cursorStyle="_"
+                cursorColor="#DDA0DD"
+                typeSpeed={100}
+                deleteSpeed={50}
+                delaySpeed={1000}
+              />
+            </span>
           </h1>
           <p className="text-gray-400 text-lg mb-8 text-center">
             Capture your ideas in any format. Search and organize your digital brain instantly
@@ -184,7 +125,7 @@ const handleToggleFavourite = async (noteId: string) => {
         {/* Main Content */}
         <Element name='favourites'>
           <Favourites 
-            pinnedThoughts={pinnedThoughts}
+            favouriteThoughts={favouriteThoughts}
             favouriteIds={favouriteIds}
             onToggleFavourite={handleToggleFavourite}
           />

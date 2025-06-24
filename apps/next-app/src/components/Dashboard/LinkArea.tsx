@@ -1,4 +1,4 @@
-// LinkArea.tsx
+/* eslint-disable */
 import React from 'react';
 
 interface LinkAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {

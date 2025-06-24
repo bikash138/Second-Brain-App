@@ -1,37 +1,40 @@
 import React, { useState } from 'react';
-import { ArrowRight, MoveRight, Search, Sparkles, X } from 'lucide-react';
+import { MoveRight, Search, Sparkles, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { ThreeDots } from 'react-loader-spinner';
+import { SearchResult } from "@/Types/types"
 
 interface SearchBarProps {
-  setResults: []
+  searchResults: SearchResult[]
+  setSearchResults: React.Dispatch<React.SetStateAction<SearchResult[]>>
 }
 
-//@ts-ignore
-export default function SearchBar({setSearchResults, searchResults}) {
+export default function SearchBar({setSearchResults, searchResults}: SearchBarProps) {
+
+  interface SearchInput{
+    search: string
+  }
 
   const {
     handleSubmit,
     register,
     reset
-  } = useForm({
+  } = useForm<SearchInput>({
     defaultValues:{
       search: ""
     }
   })
 
-  //@ts-ignore
-  const onsubmit = async(data) => {
+  const onsubmit = async(data: SearchInput) => {
     setLoading(true)
     try {
       const result = await axios.post('/api/search', data);
       setSearchResults(result.data?.results);
-      // console.log(result.data?.results);
     }finally {
       reset();
       setLoading(false);
-  }
+    }
   }
   
   const [loading, setLoading] = useState(false);

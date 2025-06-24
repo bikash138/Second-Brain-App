@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { Twitter, Linkedin, Mail, Github, Globe, Heart } from 'lucide-react';
 
@@ -33,29 +34,8 @@ export default function AboutSection() {
     }
   ];
 
-  const teamMembers = [
-    {
-      name: 'Sarah Johnson',
-      role: 'Founder & CEO',
-      image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400',
-      bio: 'Passionate about creating tools that help people organize their digital lives.'
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Lead Developer',
-      image: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400',
-      bio: 'Full-stack developer with a love for clean code and beautiful interfaces.'
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'UX Designer',
-      image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
-      bio: 'Designing intuitive experiences that make complex tasks feel simple.'
-    }
-  ];
-
   return (
-    <section className="bg-gray-900 border-t border-gray-800">
+    <section className="bg-black border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
         <div className="text-center mb-16">
@@ -135,7 +115,7 @@ export default function AboutSection() {
           <div className="space-y-2 text-gray-400">
             <p>
               <span className="font-medium text-white">Email:</span>{' '}
-              <a href="mailto:contact@yourcompany.com" className="text-blue-400 hover:text-blue-300 transition-colors duration-200">
+              <a href="mailto:vshaw138@gmail.com" className="text-blue-400 hover:text-blue-300 transition-colors duration-200">
                 vshaw138@gmail.com
               </a>
             </p>

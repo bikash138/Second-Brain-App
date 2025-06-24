@@ -31,7 +31,7 @@ const worker = new Worker("second-brain", async (job) => {
         });
         const embeddings = new OpenAIEmbeddings({
             model: "text-embedding-3-small",
-            openAIApiKey: ""
+            openAIApiKey: process.env.API_KEY_OPENAI as string
         });
         await QdrantVectorStore.fromDocuments(
             [document],

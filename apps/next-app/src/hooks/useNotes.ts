@@ -1,8 +1,9 @@
+/* eslint-disable */
 import { useState, useEffect } from 'react';
-import { Note, YouTubeNote, ImageNote, DocumentNote } from '@/Types/types'
+import { Thought } from '@/Types/types'
 
 export function useNotes() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<Thought[]>([]);
 
   // Load notes from localStorage on mount
   // useEffect(() => {
@@ -41,13 +42,13 @@ export function useNotes() {
     localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
 
-  const addNote = (noteData: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addNote = (noteData: Omit<Thought, 'id' | 'createdAt' | 'updatedAt'>) => {
     const now = new Date();
-    let newNote: Note = {
+    let newNote: Thought = {
       id: Date.now().toString(),
       ...noteData,
       createdAt: now,
-      updatedAt: now,
+      // updatedAt: now,
     };
 
     // Handle YouTube notes
@@ -75,7 +76,7 @@ export function useNotes() {
     setNotes(prev => [newNote, ...prev]);
   };
 
-  const updateNote = (id: string, updates: Partial<Note>) => {
+  const updateNote = (id: string, updates: Partial<Thought>) => {
     setNotes(prev =>
       prev.map(note =>
         note.id === id
@@ -89,18 +90,18 @@ export function useNotes() {
     setNotes(prev => prev.filter(note => note.id !== id));
   };
 
-  const searchNotes = (query: string): Note[] => {
+  const searchNotes = (query: string): Thought[] => {
     if (!query.trim()) return notes;
 
     const lowercaseQuery = query.toLowerCase();
     return notes.filter(note =>
       note.title.toLowerCase().includes(lowercaseQuery) ||
-      note.content.toLowerCase().includes(lowercaseQuery) ||
+      // note.content.toLowerCase().includes(lowercaseQuery) ||
       note.type.toLowerCase().includes(lowercaseQuery)
     );
   };
 
-  const filterNotesByType = (type: string): Note[] => {
+  const filterNotesByType = (type: string): Thought[] => {
     if (type === 'all') return notes;
     return notes.filter(note => note.type === type);
   };

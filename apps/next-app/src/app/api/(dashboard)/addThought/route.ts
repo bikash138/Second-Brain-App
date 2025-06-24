@@ -7,10 +7,12 @@ export async function POST(req: NextRequest) {
         const { title, type, content, url } = await req.json();
 
         // Build data object dynamically
-        const data: any = {
+        const data = {
             adminId: "90a32bab-efe8-41d8-814c-dd3bfcaee0e0",
             title,
             type,
+            ...(content && { content }),
+            ...(url && { url }),
         };
 
         // Only add content or url if present

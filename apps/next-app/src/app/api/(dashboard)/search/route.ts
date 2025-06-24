@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { NextRequest, NextResponse } from "next/server";
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest){
         )};
         const embeddings = new OpenAIEmbeddings({
             model: "text-embedding-3-small",
-            openAIApiKey: ""
+            openAIApiKey: process.env.API_KEY_OPENAI as string
         });
         const vectorStore = await QdrantVectorStore.fromExistingCollection(
             embeddings,
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest){
         );
         const userQuery = search;
         const topK = 3;
-        const minScore = 0.2; // adjust as needed (for cosine similarity, closer to 1 is more similar)
+        const minScore = 0.2;
 
         const resultsWithScores = await vectorStore.similaritySearchWithScore(userQuery, topK);
 
