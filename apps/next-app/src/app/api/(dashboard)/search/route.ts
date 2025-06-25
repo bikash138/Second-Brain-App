@@ -18,7 +18,7 @@ export async function POST(req: NextRequest){
         const vectorStore = await QdrantVectorStore.fromExistingCollection(
             embeddings,
             {
-              url: "http://localhost:6333",
+              url: "http://qdrant:6333",
               collectionName: "second-brain-testing",
             }
         );

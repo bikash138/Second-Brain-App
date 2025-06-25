@@ -29,7 +29,7 @@ const Navbar = () => {
             {/* Logo */}
             <div className="flex-shrink-0">
               <div className="text-2xl font-bold">
-                <span className="text-green-400">;</span>--Pwned
+                <span className="text-green-400">;</span>-Notes
               </div>
             </div>
 

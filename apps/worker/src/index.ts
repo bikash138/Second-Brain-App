@@ -37,7 +37,7 @@ const worker = new Worker("second-brain", async (job) => {
             [document],
             embeddings,
             {
-              url: "http://localhost:6333",
+              url: "http://qdrant:6333",
               collectionName: "second-brain-testing",
             }
         );
@@ -49,6 +49,6 @@ const worker = new Worker("second-brain", async (job) => {
   },
   {
     concurrency: 100,
-    connection: { host: "localhost", port: 6379 },
+    connection: { host: "valkey", port: 6379 },
   }
 );
