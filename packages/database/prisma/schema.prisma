@@ -22,17 +22,18 @@ enum ItemType {
 }
 
 model User {
-  id        String    @id     @default(uuid())
-  email     String    @unique
-  password  String
-  name      String
+  id        Int      @id @default(autoincrement())
+  clerkId   String   @unique
+  email     String?
+  name      String?
   photo     String?
   thoughts  Thought[]
+  createdAt DateTime  @default(now())
 }
 
 model Thought {
   id          Int       @id               @default(autoincrement())
-  adminId     String
+  adminId     Int
   title       String?
   content     String?
   url         String?

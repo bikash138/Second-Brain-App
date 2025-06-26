@@ -1,84 +1,105 @@
-# Turborepo starter
+# Second Brain
 
-This Turborepo starter is maintained by the Turborepo core team.
+Second Brain is a personal knowledge management app where users can save thoughts, links, videos, documents, and more — all in one place.
 
-## Using this example
+This project uses Prisma ORM and Docker for easy local development and deployment.
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
+## Prerequisites
+
+Make sure you have the following installed on your machine:
+
+- [Docker]
+- [Git]
+
+---
+
+## Getting Started: Running Locally with Docker
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/bikash138/second-brain.git
+cd second-brain
 ```
 
-## What's inside?
+### 2. Configure environment variables
 
-This Turborepo includes the following packages/apps:
+Create a `.env` file in the project root (you can copy `.env.example`) and set your database URL and other necessary variables.
 
-### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### 3. Build and start Docker containers
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Run this command to build your Docker images and start the containers:
 
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```bash
+docker-compose up --build
 ```
 
-### Develop
+This will start your app and the database.
 
-To develop all apps and packages, run the following command:
+### 4. Apply Prisma migrations
 
-```
-cd my-turborepo
-pnpm dev
-```
+Open a new terminal and run migrations inside the app container:
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+```bash
+docker compose -f docker-compose.yml exec app pnpm --filter=@repo/database exec prisma migrate deploy
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+Replace `<app_container_name>` with the name of your running app container (find it via `docker ps`).
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+### 5. Access the app
+
+Once everything is up, visit:
 
 ```
-npx turbo link
+http://localhost:3000
 ```
 
-## Useful Links
+(or whatever port your app uses)
 
-Learn more about the power of Turborepo:
+---
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+## Useful Docker commands
+
+- Stop containers:
+
+```bash
+docker-compose down
+```
+
+- View running containers:
+
+```bash
+docker ps
+```
+
+- Access container shell:
+
+```bash
+docker exec -it <container_name> sh
+```
+
+---
+
+## Notes
+
+- Prisma migrations should be created locally during development with:
+
+```bash
+npx prisma migrate dev --name your_migration_name
+```
+
+- Remember to commit your migration files to version control.
+
+- On container startup, migrations are applied automatically using `prisma migrate deploy`.
+
+---
+
+## Contributing
+
+Feel free to open issues or submit pull requests to improve the project!
+
+---
+

@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link } from "react-scroll";
+import { UserButton } from '@clerk/nextjs';
 
 
-const Navbar = () => {
+const Navbar = () => { 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
 
@@ -52,9 +53,7 @@ const Navbar = () => {
 
             {/* Dashboard Button */}
             <div className="flex-shrink-0">
-              <button className="border border-pink-400 text-pink-400 font-medium px-6 py-2 rounded-lg transition-all duration-300 hover:bg-red-500/80 cursor-pointer hover:text-black">
-                Logout
-            </button>
+            <UserButton />
             </div>
           </div>
         </div>
@@ -112,9 +111,7 @@ const Navbar = () => {
                     {item.label}
                   </Link>
                 ))}
-                <button className="min-w-full border border-pink-400 text-pink-400 font-medium px-6 py-2 rounded-lg transition-all duration-300 hover:bg-red-500/80 cursor-pointer hover:text-black">
-                  Logout
-                </button>
+                <UserButton/>
               </div>
             </div>
           </>

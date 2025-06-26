@@ -1,8 +1,13 @@
+import { getCurrentUser } from "@/utils/getCurrentUser";
 import { prisma } from "@repo/database/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(req: NextRequest) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     const { thoughtId } = await req.json();
 
     // Fetch the current note
@@ -20,7 +25,7 @@ export async function PATCH(req: NextRequest) {
 
     // Toggle the pinned value
     const updatedThought = await prisma.thought.update({
-      where: { id: thoughtId },
+      where: { id: thoughtId, adminId: user.id },
       data: { favourites: !currentThought.favourites },
       select: { id: true, favourites: true },
     });

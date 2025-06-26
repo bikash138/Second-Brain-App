@@ -1,10 +1,15 @@
 /* eslint-disable */
+import { getCurrentUser } from "@/utils/getCurrentUser";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest){
     try{
+        const user = await getCurrentUser();
+        if (!user) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
         const { search } = await req.json()
         if (!search) {
             return NextResponse.json(
