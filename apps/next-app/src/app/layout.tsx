@@ -2,7 +2,14 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/Common/NavBar";
-// import Navbar from "@/components/Common/Nav";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+} from '@clerk/nextjs'
+import Hero from "@/components/Landing/Hero";
+import Footer from "@/components/Landing/Footer";
+import {dark} from "@clerk/themes"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,16 +32,35 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {/* <div className="fixed top-4 left-0 right-0 z-50 mx-5 bg-white/30 backdrop-blur-md shadow-lg rounded-2xl"> */}
-          <NavBar />
-        {/* </div> */}
-
-        {children}
-      </body>
-    </html>
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+        // variables: {
+        //   colorPrimary: "#a21caf", // purple
+        //   colorBackground: "#18181b", // dark background
+        //   colorText: "#fff", // white text
+        //   colorInputBackground: "#27272a",
+        //   colorInputText: "#fff",
+        // },
+        elements: {
+          card: "rounded-2xl shadow-lg",
+        },
+      }}
+    >
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <SignedOut>
+            <Hero/>
+            <Footer/>
+          </SignedOut>
+          <SignedIn>
+            <NavBar />
+            {children}
+          </SignedIn>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

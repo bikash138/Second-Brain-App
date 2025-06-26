@@ -1,10 +1,15 @@
 /* eslint-disable */
+import { getCurrentUser } from "@/utils/getCurrentUser";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest){
     try{
+        const user = await getCurrentUser();
+        if (!user) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
         const { search } = await req.json()
         if (!search) {
             return NextResponse.json(
@@ -18,7 +23,7 @@ export async function POST(req: NextRequest){
         const vectorStore = await QdrantVectorStore.fromExistingCollection(
             embeddings,
             {
-              url: "http://localhost:6333",
+              url: "http://qdrant:6333",
               collectionName: "second-brain-testing",
             }
         );

@@ -1,14 +1,26 @@
 import { prisma } from "@repo/database/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import {enqueueNote} from "@repo/queue/enqueueNote"
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req: NextRequest) {
     try {
+        const { userId } = await auth()
+        if (!userId) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+        const user = await prisma.user.findUnique({
+            where: { clerkId: userId },
+        });
+
+        if (!user) {
+            return NextResponse.json({ message: "User not found" }, { status: 404 });
+        }
         const { title, type, content, url } = await req.json();
 
         // Build data object dynamically
         const data = {
-            adminId: "90a32bab-efe8-41d8-814c-dd3bfcaee0e0",
+            adminId: user.id,
             title,
             type,
             ...(content && { content }),

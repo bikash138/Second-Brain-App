@@ -1,0 +1,43 @@
+services:
+  valkey:
+    image: valkey/valkey
+
+  qdrant:
+    image: qdrant/qdrant
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+  postgres:
+    image: postgres:15-alpine
+    env_file:
+      - .env.prod
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  app:
+    build: .
+    command: pnpm --filter=next-app start
+    env_file:
+      - .env.prod
+    depends_on:
+      - postgres
+      - qdrant
+      - valkey
+    ports:
+      - "80:3000"
+
+  worker:
+    build: .
+    command: pnpm --filter=worker start
+    env_file:
+      - .env.prod
+    depends_on:
+      - postgres
+      - qdrant
+      - valkey
+
+volumes:
+  qdrant_storage:
+  pgdata:
+
