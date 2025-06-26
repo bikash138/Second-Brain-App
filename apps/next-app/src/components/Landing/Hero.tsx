@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SignInButton } from '@clerk/nextjs'
-import { ArrowRight, Search, Tag, FileText, Video, BookOpen, Brain, Zap } from 'lucide-react';
+import { ArrowRight, Search, Tag, Brain, Zap } from 'lucide-react';
 
 const Hero = () => {
   const features = [

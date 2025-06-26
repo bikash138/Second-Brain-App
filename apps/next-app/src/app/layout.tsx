@@ -6,7 +6,6 @@ import {
   ClerkProvider,
   SignedIn,
   SignedOut,
-  SignInButton,
 } from '@clerk/nextjs'
 import Hero from "@/components/Landing/Hero";
 import Footer from "@/components/Landing/Footer";
