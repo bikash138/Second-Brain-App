@@ -85,16 +85,11 @@ const Hero = () => {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
           >
             <SignInButton mode="modal">
-              <motion.button
-                whileHover={{ 
-                  scale: 1.05, 
-                  boxShadow: "0 0 30px rgba(147, 51, 234, 0.4)" 
-                }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full text-lg font-semibold border border-purple-500 hover:border-pink-500 transition-all duration-300 shadow-lg"
+              <button
+                className="cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full text-lg font-semibold border border-purple-500 hover:border-pink-500 transition-all duration-300 shadow-lg"
               >
                 Get Started
-              </motion.button>
+              </button>
             </SignInButton>
             
             <motion.button
